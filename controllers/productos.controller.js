@@ -1,38 +1,65 @@
 import models from '../models/productos.model.js'
 
-const getAll = (req, res) => {
-    models.obtenerTodosLosProductos()
-    res.send('GET ALL')
+const getAll = async (req, res) => {
+    try {
+        const productos = await models.obtenerTodosLosProductos()
+        res.json(productos)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ mensaje: 'No se pudo obtener los productos' })
+    }
 }
 
-const getOne = (req, res) => {
+const getOne = async (req, res) => {
     const id = req.params.id
-    console.log(id)
-    models.obtenerUnProducto()
-    res.send('GET ONE')
+    try {
+        const producto = await models.obtenerUnProducto(id)
+        res.json(producto)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ mensaje: 'No se pudo obtener el producto solicitado' })
+    }
 }
 
-const create = (req, res) => {
+const create = async (req, res) => {
     const productoACrear = req.body
-    console.log(productoACrear)
-    models.crearUnProducto()
-    res.send('CREATE PRODUCTO')
+    try {
+        const productoGuardado = await models.crearUnProducto(productoACrear)
+        res.status(201).json(productoGuardado)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ mensaje: 'No se pudo guardar el producto' })
+    }
 }
 
-const update = (req, res) => {
+const update = async (req, res) => {
     const id = req.params.id
     const productoAEditar = req.body
-    console.log(id)
-    console.log(productoAEditar)
-    models.editarUnProducto()
-    res.send('UPDATE PRODUCTO')
+    productoAEditar.id = id
+
+    try {
+        const productoEditado = await models.editarUnProducto(productoAEditar)
+        res.json(productoEditado)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ mensaje: 'No se pudo editar el producto solicitado' })
+    }
 }
 
-const remove = (req, res) => {
+const remove = async (req, res) => {
     const id = req.params.id
-    console.log(id)
-    models.eliminarProducto()
-    res.send('DELETE PRODUCTO')
+    try {
+        const productoEliminado = await models.eliminarProducto(id)
+        res.json(productoEliminado)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ mensaje: 'No se pudo borrar el producto' })
+    }
 }
 
 export default {
